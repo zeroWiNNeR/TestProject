@@ -49,6 +49,14 @@ public class Client {
         this.organizationalAndLegalForm = organizationalAndLegalForm;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
@@ -88,4 +96,5 @@ public class Client {
     public void setDeposit(Deposit deposit) {
         this.deposit = deposit;
     }
+
 }

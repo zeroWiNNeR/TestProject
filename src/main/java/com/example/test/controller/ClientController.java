@@ -1,21 +1,13 @@
-package com.example.test.controllers;
+package com.example.test.controller;
 
 import com.example.test.model.BankAndClientViews;
 import com.example.test.model.Client;
-import com.example.test.repo.ClientRepo;
+import com.example.test.service.ClientService;
 import com.fasterxml.jackson.annotation.JsonView;
-import javafx.collections.FXCollections;
-import javafx.embed.swt.FXCanvas;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.function.Supplier;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 /*
  * Created by Aleksei Vekovshinin on 12.11.2020
@@ -24,22 +16,22 @@ import java.util.stream.Collectors;
 @RequestMapping("clients")
 public class ClientController {
 
-    private final ClientRepo clientRepo;
+    private final ClientService clientService;
     @Autowired
-    public ClientController(ClientRepo clientRepo) {
-        this.clientRepo = clientRepo;
+    public ClientController(ClientService clientService) {
+        this.clientService = clientService;
     }
 
     @GetMapping
     @JsonView(BankAndClientViews.ForUser.class)
     public List<Client> getAll() {
-        return clientRepo.findAll();
+        return clientService.findAll();
     }
 
     @PostMapping
     @JsonView(BankAndClientViews.ForUser.class)
     public Client create(@RequestBody Client client) {
-        return clientRepo.save(client);
+        return clientService.saveClient(client);
     }
 
     @PutMapping("{id}")
@@ -48,13 +40,12 @@ public class ClientController {
             @PathVariable("id") Client clientFromDb,
             @RequestBody Client client
     ) {
-        BeanUtils.copyProperties(client, clientFromDb, "id");
-        return clientRepo.save(clientFromDb);
+        return clientService.updateClient(clientFromDb, client);
     }
 
     @DeleteMapping("{id}")
     public void delete(@PathVariable("id") Client client) {
-        clientRepo.delete(client);
+        clientService.deleteClient(client);
     }
 
 }

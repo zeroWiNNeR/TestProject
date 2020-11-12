@@ -1,5 +1,6 @@
 package com.example.test.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
@@ -29,27 +30,36 @@ public class Deposit {
     private Bank bank;
 
     @JsonView(BankAndClientViews.ForUser.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "open_date")
     private LocalDateTime openDate;
 
     @JsonView(BankAndClientViews.ForUser.class)
     @Column(name = "percent")
-    private Byte percent;
+    private Short percent;
 
     @JsonView(BankAndClientViews.ForUser.class)
     @Column(name = "time_in_months_since_opening")
-    private Short timeInMonthsSinceOpening;
+    private Short openTimeInMonths;
 
 
     public Deposit() {
     }
 
-    public Deposit(Client client, Bank bank, LocalDateTime openDate, Byte percent, Short timeInMonthsSinceOpening) {
+    public Deposit(Client client, Bank bank, LocalDateTime openDate, Short percent, Short openTimeInMonths) {
         this.client = client;
         this.bank = bank;
         this.openDate = openDate;
         this.percent = percent;
-        this.timeInMonthsSinceOpening = timeInMonthsSinceOpening;
+        this.openTimeInMonths = openTimeInMonths;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Client getClient() {
@@ -76,19 +86,20 @@ public class Deposit {
         this.openDate = openDate;
     }
 
-    public Byte getPercent() {
+    public Short getPercent() {
         return percent;
     }
 
-    public void setPercent(Byte percent) {
+    public void setPercent(Short percent) {
         this.percent = percent;
     }
 
-    public Short getTimeInMonthsSinceOpening() {
-        return timeInMonthsSinceOpening;
+    public Short getOpenTimeInMonths() {
+        return openTimeInMonths;
     }
 
-    public void setTimeInMonthsSinceOpening(Short timeInMonthsSinceOpening) {
-        this.timeInMonthsSinceOpening = timeInMonthsSinceOpening;
+    public void setOpenTimeInMonths(Short openTimeInMonths) {
+        this.openTimeInMonths = openTimeInMonths;
     }
+
 }
