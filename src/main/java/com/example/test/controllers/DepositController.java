@@ -1,7 +1,9 @@
 package com.example.test.controllers;
 
+import com.example.test.model.BankAndClientViews;
 import com.example.test.model.Deposit;
 import com.example.test.repo.DepositRepo;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +14,7 @@ import java.util.List;
  * Created by Aleksei Vekovshinin on 12.11.2020
  */
 @RestController
-@RequestMapping("deposit")
+@RequestMapping("deposits")
 public class DepositController {
 
     private final DepositRepo depositRepo;
@@ -22,7 +24,10 @@ public class DepositController {
     }
 
     @GetMapping
+    @JsonView(BankAndClientViews.ForUser.class)
     public List<Deposit> getAll() {
+//        List<Deposit> deposits = depositRepo.findAll();
+//        return deposits;
         return depositRepo.findAll();
     }
 

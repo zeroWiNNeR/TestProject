@@ -5,6 +5,9 @@ package com.example.test.model;
  */
 public enum OrganizationalAndLegalForm {
 
-    ИП, ООО, ОАО
+    IP,
+    OOO,
+    OAO,
+    ZAO;
 
 }

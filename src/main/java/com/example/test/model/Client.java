@@ -1,5 +1,7 @@
 package com.example.test.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.*;
 
 /*
@@ -12,21 +14,28 @@ public class Client {
     @Id
     @SequenceGenerator(name="clients_generator", sequenceName = "clients_seq", allocationSize = 1, initialValue = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="clients_generator")
+    @JsonView(BankAndClientViews.ForUser.class)
     private Long id;
 
+    @JsonView(BankAndClientViews.ForUser.class)
     @Column(name = "name")
     private String name;
 
+    @JsonView(BankAndClientViews.ForUser.class)
     @Column(name = "short_name")
     private String shortName;
 
+    @JsonView(BankAndClientViews.ForUser.class)
     @Column(name = "address")
     private String address;
 
+    @JsonView(BankAndClientViews.ForUser.class)
+    @Enumerated(EnumType.STRING)
     @Column(name = "organizational_form")
     private OrganizationalAndLegalForm organizationalAndLegalForm;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "client")
+    @JsonView(BankAndClientViews.All.class)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "client")
     private Deposit deposit;
 
 
