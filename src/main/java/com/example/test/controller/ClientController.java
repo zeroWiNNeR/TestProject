@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /*
@@ -30,7 +31,7 @@ public class ClientController {
 
     @PostMapping
     @JsonView(BankAndClientViews.ForUser.class)
-    public Client create(@RequestBody Client client) {
+    public Client create(@RequestBody @Valid Client client) {
         return clientService.saveClient(client);
     }
 
@@ -38,7 +39,7 @@ public class ClientController {
     @JsonView(BankAndClientViews.ForUser.class)
     public Client update(
             @PathVariable("id") Client clientFromDb,
-            @RequestBody Client client
+            @RequestBody @Valid Client client
     ) {
         return clientService.updateClient(clientFromDb, client);
     }

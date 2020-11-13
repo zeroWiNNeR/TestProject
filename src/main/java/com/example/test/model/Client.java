@@ -3,6 +3,7 @@ package com.example.test.model;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 
 /*
  * Created by Aleksei Vekovshinin on 12.11.2020
@@ -19,6 +20,7 @@ public class Client {
 
     @JsonView(BankAndClientViews.ForUser.class)
     @Column(name = "name")
+    @NotEmpty(message = "Нельзя сохранить клиента без имени!")
     private String name;
 
     @JsonView(BankAndClientViews.ForUser.class)
@@ -27,6 +29,7 @@ public class Client {
 
     @JsonView(BankAndClientViews.ForUser.class)
     @Column(name = "address")
+    @NotEmpty(message = "Нельзя сохранить клиента без адреса!")
     private String address;
 
     @JsonView(BankAndClientViews.ForUser.class)

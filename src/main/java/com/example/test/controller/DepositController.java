@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /*
@@ -41,7 +42,7 @@ public class DepositController {
 
     @PostMapping()
     @JsonView(BankAndClientViews.ForUser.class)
-    public Deposit create(@RequestBody Deposit deposit) {
+    public Deposit create(@RequestBody @Valid Deposit deposit) {
         return depositService.saveDeposit(deposit);
     }
 
@@ -49,7 +50,7 @@ public class DepositController {
     @JsonView(BankAndClientViews.ForUser.class)
     public Deposit update(
             @PathVariable("id") Deposit depositFromDb,
-            @RequestBody Deposit deposit
+            @RequestBody @Valid Deposit deposit
     ) {
         return depositService.updateDeposit(depositFromDb, deposit);
     }

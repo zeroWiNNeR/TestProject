@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /*
@@ -22,11 +25,13 @@ public class Deposit {
     @JsonView(BankAndClientViews.ForUser.class)
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "client_id")
+    @NotNull(message = "К депозиту должен быть привязан клиент!")
     private Client client;
 
     @JsonView(BankAndClientViews.ForUser.class)
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "bank_id")
+    @NotNull(message = "К депозиту должен быть привязан банк!")
     private Bank bank;
 
     @JsonView(BankAndClientViews.ForUser.class)
@@ -36,10 +41,12 @@ public class Deposit {
 
     @JsonView(BankAndClientViews.ForUser.class)
     @Column(name = "percent")
+    @Min(value = 0, message = "Процент не может быть меньше 0%!")
     private Short percent;
 
     @JsonView(BankAndClientViews.ForUser.class)
     @Column(name = "time_in_months_since_opening")
+    @Min(value = 1, message = "Срок открытия не может быть меньше 1 месяца!")
     private Short openTimeInMonths;
 
 
