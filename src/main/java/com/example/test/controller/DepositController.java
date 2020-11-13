@@ -24,10 +24,19 @@ public class DepositController {
         this.depositService = depositService;
     }
 
-    @GetMapping
+    @GetMapping("/")
     @JsonView(BankAndClientViews.ForUser.class)
     public List<Deposit> getAll() {
         return depositService.findAll();
+    }
+
+    @GetMapping("/custom")
+    @JsonView(BankAndClientViews.ForUser.class)
+    public List<Deposit> getFilteredAndSorted(
+            @RequestParam("openTime") Short openTimeInMonths,
+            @RequestParam("sortTarget") String sortTarget
+    ) {
+        return depositService.getFilteredByOpenTimeAndSortedByTarget(openTimeInMonths, sortTarget);
     }
 
     @PostMapping()

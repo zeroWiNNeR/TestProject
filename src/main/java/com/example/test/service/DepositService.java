@@ -15,6 +15,11 @@ public interface DepositService {
     List<Deposit> findAll();
 
     /**
+     * Возвращает депозиты срок которых больше target
+     */
+    List<Deposit> getFilteredByOpenTimeAndSortedByTarget(Short openTimeInMonths, String sortTarget);
+
+    /**
      * Сохраняет в БД новый депозит
      */
     Deposit saveDeposit(Deposit deposit);

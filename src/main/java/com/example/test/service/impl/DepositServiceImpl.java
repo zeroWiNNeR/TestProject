@@ -5,6 +5,7 @@ import com.example.test.repo.DepositRepo;
 import com.example.test.service.DepositService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,6 +26,19 @@ public class DepositServiceImpl implements DepositService {
     @Override
     public List<Deposit> findAll() {
         return depositRepo.findAll();
+    }
+
+    @Override
+    public List<Deposit> getFilteredByOpenTimeAndSortedByTarget(Short openTimeInMonths, String sortTarget) {
+        if ((sortTarget == null || "".equals(sortTarget)) && (openTimeInMonths == null)) {
+            return depositRepo.findAll();
+        } else if ((sortTarget == null || "".equals(sortTarget)) && openTimeInMonths > -1) {
+            return depositRepo.getDepositsFilteredByOpenTime(openTimeInMonths);
+        } else if ((sortTarget != null && sortTarget.length()>0) && (openTimeInMonths == null || openTimeInMonths == 0)) {
+            return depositRepo.getDepositsSortedByTarget(Sort.by(sortTarget));
+        } else {
+            return depositRepo.getDepositsFilteredByOpenMonthsAndSortedByTarget(openTimeInMonths, Sort.by(sortTarget));
+        }
     }
 
     @Override

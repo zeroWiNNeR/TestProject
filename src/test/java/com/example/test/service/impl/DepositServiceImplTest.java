@@ -13,10 +13,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +60,26 @@ class DepositServiceImplTest {
         Assert.assertNotNull(depositsFromDb);
         Assert.assertEquals(2, depositsFromDb.size());
         Mockito.verify(depositRepo, Mockito.times(1)).findAll();
+    }
+
+    @Test
+    void shouldFindFilteredAndSortedDeposits() {
+        List<Deposit> deposits = new ArrayList<>();
+        Client client = new Client("Ivan", "Ivan Ivanov", "Perm", OrganizationalAndLegalForm.IP);
+        Bank firstBank = new Bank("Klukva", "222222222");
+        Deposit firstDeposit = new Deposit(client, firstBank, LocalDateTime.parse("2020-11-11T10:11:30"), (short) 3, (short) 5);
+        firstDeposit.setId(2L);
+        Bank secondBank = new Bank("Klukva", "222222222");
+        Deposit secondDeposit = new Deposit(client, secondBank, LocalDateTime.parse("2020-11-12T12:35:34"), (short) 3, (short) 4);
+        secondDeposit.setId(3L);
+        deposits.add(secondDeposit);
+        Mockito.when(depositRepo.getDepositsFilteredByOpenMonthsAndSortedByTarget((short) 3, Sort.by("openDate"))).thenReturn(deposits);
+
+        List<Deposit> depositsFromDb = depositService.getFilteredByOpenTimeAndSortedByTarget((short) 3,"openDate");
+
+        Assert.assertFalse(depositsFromDb.isEmpty());
+        Assert.assertEquals(1, depositsFromDb.size());
+        Mockito.verify(depositRepo, Mockito.times(1)).getDepositsFilteredByOpenMonthsAndSortedByTarget((short) 3, Sort.by("openDate"));
     }
 
     @Test

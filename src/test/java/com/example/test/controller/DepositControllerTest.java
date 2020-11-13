@@ -13,10 +13,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +67,27 @@ class DepositControllerTest {
     }
 
     @Test
+    void shouldFindFilteredAndSortedDeposits() {
+        List<Deposit> deposits = new ArrayList<>();
+        Client client = new Client("Ivan", "Ivan Ivanov", "Perm", OrganizationalAndLegalForm.IP);
+        Bank firstBank = new Bank("Klukva", "222222222");
+        Deposit firstDeposit = new Deposit(client, firstBank, LocalDateTime.parse("2020-11-11T10:11:30"), (short) 3, (short) 5);
+        firstDeposit.setId(2L);
+        Bank secondBank = new Bank("Klukva", "222222222");
+        Deposit secondDeposit = new Deposit(client, secondBank, LocalDateTime.parse("2020-11-11T01:35:34"), (short) 3, (short) 4);
+        secondDeposit.setId(3L);
+        deposits.add(secondDeposit);
+        Mockito.when(depositService.getFilteredByOpenTimeAndSortedByTarget((short) 3, "openDate")).thenReturn(deposits);
+
+        List<Deposit> depositsFromDb = depositController.getFilteredAndSorted((short) 3, "openDate");
+
+        Assert.assertFalse(depositsFromDb.isEmpty());
+        Assert.assertEquals(1, depositsFromDb.size());
+        Mockito.verify(depositService, Mockito.times(1))
+                .getFilteredByOpenTimeAndSortedByTarget((short) 3, "openDate");
+    }
+
+    @Test
     void shouldSaveDeposit() {
         Bank bank = new Bank("Sberbank", "111111111");
         Client client = new Client("Ivan", "Ivan Ivanov", "Perm", OrganizationalAndLegalForm.IP);
@@ -96,6 +117,8 @@ class DepositControllerTest {
         Deposit deposit = new Deposit(client, bank, null, (short) 3, (short) 1);
         deposit.setId(1L);
 
+        Mockito.when(depositService.updateDeposit(any(Deposit.class), any(Deposit.class))).thenReturn(deposit);
+
         Bank bankFromDb = new Bank("Sberbank", "111111111");
         Client clientFromDb = new Client("Ivan", "Ivan Ivanov", "Perm", OrganizationalAndLegalForm.IP);
         Deposit depositFromDb = new Deposit(clientFromDb, bankFromDb, null, (short) 3, (short) 0);
@@ -103,8 +126,6 @@ class DepositControllerTest {
         Bank bankUpdate = new Bank("Sberbank", "222222222");
         Client clientUpdate = new Client("Sasha", "Sasha Ivanov", "Perm", OrganizationalAndLegalForm.IP);
         Deposit depositUpdate = new Deposit(clientUpdate, bankUpdate, null, (short) 3, (short) 1);
-
-        Mockito.when(depositService.updateDeposit(any(Deposit.class), any(Deposit.class))).thenReturn(deposit);
 
         Deposit updatedDeposit = depositController.update(depositFromDb, depositUpdate);
 
