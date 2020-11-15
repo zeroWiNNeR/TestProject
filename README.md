@@ -6,7 +6,6 @@
 * Spring Web;
 * Spring Data;
 * PostgreSQL database;
-* Hibernate;
 
 #### To run this application use:
 
